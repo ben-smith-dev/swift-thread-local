@@ -1,0 +1,21 @@
+# System Files
+.DS_Store
+
+# SPM
+.build/
+/Packages
+.swiftpm/xcode/
+.swiftpm/configuration/registries.json
+.netrc
+!Package.resolved
+
+# Xcode
+xcuserdata/
+DerivedData/
+build/
+*.xcarchive
+*.dSYM
+*.dSYM.zip
+
+# Misc.
+.vscode/
