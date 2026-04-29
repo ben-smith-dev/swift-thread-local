@@ -2,7 +2,22 @@
 
 import PackageDescription
 
-let package = Package(name: "swift-thread-local")
+let package = Package(
+    name: "swift-thread-local",
+    products: [
+        .library(
+            name: "ThreadLocal",
+            targets: ["ThreadLocal"]
+        )
+    ],
+    targets: [
+        .target(name: "ThreadLocal"),
+        .testTarget(
+            name: "ThreadLocalTests",
+            dependencies: [.target(name: "ThreadLocal")]
+        )
+    ]
+)
 
 // MARK: Swift Upcoming Features
 
