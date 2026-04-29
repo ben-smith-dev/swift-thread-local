@@ -27,6 +27,14 @@ private struct ThreadLocalTests {
     }
 
     @Test
+    private func sequentialGetProvidedSameInstance() {
+        let threadLocalValue = ThreadLocal(defaultValue: Ref())
+
+        // swiftlint:disable:next identical_operands
+        #expect(threadLocalValue.get() === threadLocalValue.get())
+    }
+
+    @Test
     private func eachThreadGetsItsOwnDefaultValue() async {
         let threadLocalValue = ThreadLocal(defaultValue: Ref())
 
