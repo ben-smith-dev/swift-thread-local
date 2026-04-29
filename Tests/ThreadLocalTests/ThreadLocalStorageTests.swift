@@ -1,8 +1,6 @@
 import Testing
 @testable import ThreadLocal
 
-import class Foundation.Thread
-
 @Suite
 private struct ThreadLocalStorageTests {
     @Test
