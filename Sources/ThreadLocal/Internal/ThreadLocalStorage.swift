@@ -1,4 +1,10 @@
+#if canImport(pthread)
 import pthread
+#elseif canImport(Glibc)
+import Glibc
+#elseif canImport(Musl)
+import Musl
+#endif
 
 internal struct ThreadLocalStorage<Value>: ~Copyable {
     private let key: pthread_key_t
@@ -100,11 +106,21 @@ extension ThreadLocalStorage {
 // MARK: Box Destructor
 
 extension ThreadLocalStorage {
+#if canImport(pthread)
     private static func makeBoxDestructor() -> @convention(c) (UnsafeMutableRawPointer) -> Void  {
         { pointer in
             Unmanaged<AnyObject>.fromOpaque(pointer).release()
         }
     }
+#elseif canImport(Glibc) || canImport(Musl)
+    private static func makeBoxDestructor() -> @convention(c) (UnsafeMutableRawPointer?) -> Void  {
+        { pointer in
+            guard let pointer else { return }
+
+            Unmanaged<AnyObject>.fromOpaque(pointer).release()
+        }
+    }
+#endif
 }
 
 // MARK: Sendable Conformance
