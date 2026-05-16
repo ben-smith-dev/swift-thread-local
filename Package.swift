@@ -11,7 +11,10 @@ let package = Package(
         )
     ],
     targets: [
-        .target(name: "ThreadLocal"),
+        .target(
+            name: "ThreadLocal",
+            resources: [.copy("PrivacyInfo.xcprivacy")]
+        ),
         .testTarget(
             name: "ThreadLocalTests",
             dependencies: [.target(name: "ThreadLocal")]
