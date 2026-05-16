@@ -1,4 +1,12 @@
-import Foundation
+#if canImport(pthread)
+import pthread
+#elseif canImport(Glibc)
+import Glibc
+#elseif canImport(Musl)
+import Musl
+#endif
+
+import class Foundation.Thread
 
 internal func withFinalizingUniqueThread<Success, Failure: Error>(
     operation: @escaping @Sendable () throws(Failure) -> Success
@@ -7,24 +15,7 @@ internal func withFinalizingUniqueThread<Success, Failure: Error>(
         Thread.detachNewThread {
             let threadOperation = GenericThreadOperation(operation)
 
-            var threadId: pthread_t?
-            let threadCreateErrorCode: Int32 = pthread_create(
-                &threadId,
-                nil,
-                { pointer in
-                    Unmanaged<ThreadOperation>
-                        .fromOpaque(pointer)
-                        .takeRetainedValue()
-                        .execute()
-
-                    return nil
-                },
-                Unmanaged.passRetained(threadOperation).toOpaque()
-            )
-
-            guard let threadId, threadCreateErrorCode == 0 else {
-                preconditionFailure("Failed to create p thread.")
-            }
+            let threadId: pthread_t = createPThread(threadOperation: threadOperation)
 
             let threadJoinErrorCode: Int32 = pthread_join(threadId, nil)
             precondition(threadJoinErrorCode == 0, "Failed to join p thread.")
@@ -38,6 +29,52 @@ internal func withFinalizingUniqueThread<Success, Failure: Error>(
     }
 
     return try result.get()
+}
+
+private func createPThread(threadOperation: ThreadOperation) -> pthread_t {
+#if canImport(pthread)
+    var threadId: pthread_t?
+    let threadCreateErrorCode: Int32 = pthread_create(
+        &threadId,
+        nil,
+        { pointer in
+            Unmanaged<ThreadOperation>
+                .fromOpaque(pointer)
+                .takeRetainedValue()
+                .execute()
+
+            return nil
+        },
+        Unmanaged.passRetained(threadOperation).toOpaque()
+    )
+
+    guard let threadId, threadCreateErrorCode == 0 else {
+        preconditionFailure("Failed to create p thread.")
+    }
+#elseif canImport(Glibc) || canImport(Musl)
+    var threadId = pthread_t()
+    let threadCreateErrorCode: Int32 = pthread_create(
+        &threadId,
+        nil,
+        { pointer in
+            guard let pointer else { return nil }
+
+            Unmanaged<ThreadOperation>
+                .fromOpaque(pointer)
+                .takeRetainedValue()
+                .execute()
+
+            return nil
+        },
+        Unmanaged.passRetained(threadOperation).toOpaque()
+    )
+
+    guard threadCreateErrorCode == 0 else {
+        preconditionFailure("Failed to create p thread.")
+    }
+#endif
+
+    return threadId
 }
 
 private class ThreadOperation {

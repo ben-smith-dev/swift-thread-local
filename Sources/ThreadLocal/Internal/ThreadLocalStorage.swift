@@ -1,13 +1,17 @@
+#if canImport(pthread)
 import pthread
+#elseif canImport(Glibc)
+import Glibc
+#elseif canImport(Musl)
+import Musl
+#endif
 
 internal struct ThreadLocalStorage<Value>: ~Copyable {
     private let key: pthread_key_t
 
     public init() {
         var key: pthread_key_t = 0
-        let errorCode: Int32 = pthread_key_create(&key) { pointer in
-            Unmanaged<AnyObject>.fromOpaque(pointer).release()
-        }
+        let errorCode: Int32 = pthread_key_create(&key, Self.makeBoxDestructor())
 
         precondition(
             errorCode == .zero,
@@ -97,6 +101,26 @@ extension ThreadLocalStorage {
             self.value = value
         }
     }
+}
+
+// MARK: Box Destructor
+
+extension ThreadLocalStorage {
+#if canImport(pthread)
+    private static func makeBoxDestructor() -> @convention(c) (UnsafeMutableRawPointer) -> Void  {
+        { pointer in
+            Unmanaged<AnyObject>.fromOpaque(pointer).release()
+        }
+    }
+#elseif canImport(Glibc) || canImport(Musl)
+    private static func makeBoxDestructor() -> @convention(c) (UnsafeMutableRawPointer?) -> Void  {
+        { pointer in
+            guard let pointer else { return }
+
+            Unmanaged<AnyObject>.fromOpaque(pointer).release()
+        }
+    }
+#endif
 }
 
 // MARK: Sendable Conformance
