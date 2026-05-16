@@ -5,9 +5,7 @@ internal struct ThreadLocalStorage<Value>: ~Copyable {
 
     public init() {
         var key: pthread_key_t = 0
-        let errorCode: Int32 = pthread_key_create(&key) { pointer in
-            Unmanaged<AnyObject>.fromOpaque(pointer).release()
-        }
+        let errorCode: Int32 = pthread_key_create(&key, Self.makeBoxDestructor())
 
         precondition(
             errorCode == .zero,
@@ -95,6 +93,16 @@ extension ThreadLocalStorage {
 
         public init(_ value: Value) {
             self.value = value
+        }
+    }
+}
+
+// MARK: Box Destructor
+
+extension ThreadLocalStorage {
+    private static func makeBoxDestructor() -> @convention(c) (UnsafeMutableRawPointer) -> Void  {
+        { pointer in
+            Unmanaged<AnyObject>.fromOpaque(pointer).release()
         }
     }
 }
