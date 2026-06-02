@@ -2,12 +2,8 @@
   <h1>swift-thread-local</h1>
 
   <p>
-    <a href="https://swiftpackageindex.com/ben-smith-dev/swift-thread-local">
-      <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fben-smith-dev%2Fswift-thread-local%2Fbadge%3Ftype%3Dswift-versions&style=flat-square" />
-    </a>
-    <a href="https://swiftpackageindex.com/ben-smith-dev/swift-thread-local">
-      <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fben-smith-dev%2Fswift-thread-local%2Fbadge%3Ftype%3Dplatforms&style=flat-square" />
-    </a>
+    <a href="https://swiftpackageindex.com/ben-smith-dev/swift-thread-local"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fben-smith-dev%2Fswift-thread-local%2Fbadge%3Ftype%3Dswift-versions&style=flat-square" /></a>
+    <a href="https://swiftpackageindex.com/ben-smith-dev/swift-thread-local"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fben-smith-dev%2Fswift-thread-local%2Fbadge%3Ftype%3Dplatforms&style=flat-square" /></a>
   </p>
 
   <p>A Swift package providing thread-local value wrappers.</p>
