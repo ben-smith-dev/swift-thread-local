@@ -10,7 +10,7 @@ Add the [swift-thread-local](https://github.com/ben-smith-dev/swift-thread-local
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/ben-smith-dev/swift-thread-local", from: "0.1.0"),
+    .package(url: "https://github.com/ben-smith-dev/swift-thread-local", from: "0.2.0"),
 ]
 ```
 
@@ -24,17 +24,21 @@ dependencies: [
 
 ### Xcode
 
-Add [swift-thread-local](https://github.com/ben-smith-dev/swift-thread-local) to your project as a package dependency.
+Add [swift-thread-local](https://github.com/ben-smith-dev/swift-thread-local) to your project as a [package dependency](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app#Add-a-package-dependency).
 
 ## Privacy
 
 This package does not collect data or use required reason APIs.
 
-For more information about Apple's privacy requirements, see:
+<details>
+  <summary>Apple's privacy requirements</summary>
 
-- [Privacy Manifest Files](https://developer.apple.com/documentation/bundleresources/privacy-manifest-files)
-- [User Privacy and Data Use](https://developer.apple.com/app-store/user-privacy-and-data-use)
-- [Describing Data Use in Privacy Manifests](https://developer.apple.com/documentation/bundleresources/describing-data-use-in-privacy-manifests)
+  <ul>
+    <li><a href="https://developer.apple.com/documentation/bundleresources/privacy-manifest-files">Privacy Manifest Files</a></li>
+    <li><a href="https://developer.apple.com/app-store/user-privacy-and-data-use">User Privacy and Data Use</a></li>
+    <li><a href="https://developer.apple.com/documentation/bundleresources/describing-data-use-in-privacy-manifests">Describing Data Use in Privacy Manifests</a></li>
+  </ul>
+</details>
 
 ## Contributing
 
