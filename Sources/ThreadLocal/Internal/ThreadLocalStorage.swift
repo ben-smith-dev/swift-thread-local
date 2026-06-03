@@ -107,13 +107,13 @@ extension ThreadLocalStorage {
 
 extension ThreadLocalStorage {
 #if canImport(pthread)
-    private static func makeBoxDestructor() -> @convention(c) (UnsafeMutableRawPointer) -> Void  {
+    private static func makeBoxDestructor() -> @convention(c) (UnsafeMutableRawPointer) -> Void {
         { pointer in
             Unmanaged<AnyObject>.fromOpaque(pointer).release()
         }
     }
 #elseif canImport(Glibc) || canImport(Musl)
-    private static func makeBoxDestructor() -> @convention(c) (UnsafeMutableRawPointer?) -> Void  {
+    private static func makeBoxDestructor() -> @convention(c) (UnsafeMutableRawPointer?) -> Void {
         { pointer in
             guard let pointer else { return }
 
