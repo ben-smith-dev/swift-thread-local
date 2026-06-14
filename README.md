@@ -15,6 +15,8 @@ Thread-local value wrappers give threads their own independent instance of the w
 
 The `defaultValue` (or `value` for `ReadonlyThreadLocal`) passed into the wrapper's initializer is evaluated lazily at most **once** per thread. This ensures each thread has its own distinct value.
 
+Thread-local wrapper method calls are restricted to synchronous contexts only. This ensures that no suspension points are hit, which may cause executer switches.
+
 > [!IMPORTANT]
 > Thread-local wrappers **must** be `nonisolated` and declared as global constants or static properties to avoid memory leaks and unexpected behavior.
 
