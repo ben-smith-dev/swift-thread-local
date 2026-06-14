@@ -15,8 +15,10 @@ Thread-local value wrappers give threads their own independent instance of the w
 
 The `defaultValue` (or `value` for `ReadonlyThreadLocal`) passed into the wrapper's initializer is evaluated lazily at most **once** per thread. This ensures each thread has its own distinct value.
 
+Thread-local wrapper method calls are restricted to synchronous contexts only. This ensures that no suspension points are hit, which may cause executer switches.
+
 > [!IMPORTANT]
-> Thread-local wrappers **must** be `nonisolated` and declared as global constants or static properties to avoid memory leaks and unexpected behavior.
+> Thread-local wrappers **must** be `nonisolated` and declared as global constants or static properties to avoid unexpected behavior and memory leaks.
 
 ### ThreadLocal
 
@@ -25,13 +27,13 @@ Use `ThreadLocal` when the wrapped value can be read and overwritten arbitrarily
 ```swift
 import ThreadLocal
 
-nonisolated let currentCount = ThreadLocal<Int>(defaultValue: 0)
+nonisolated let currentCount = ThreadLocal(defaultValue: 0)
 
 // Get the current thread's wrapped value.
 let count: Int = currentCount.get()
 
 // Set the current thread's wrapped value.
-currentCount.set(currentCount + 1)
+currentCount.set(count + 1)
 ```
 
 ### ScopedThreadLocal
@@ -41,7 +43,7 @@ Use `ScopedThreadLocal` when the wrapped value is temporarily scoped to synchron
 ```swift
 import ThreadLocal
 
-nonisolated let currentContext = ScopedThreadLocal<Context>(defaultValue: .default)
+nonisolated let currentContext = ScopedThreadLocal(defaultValue: Context())
 
 // Get the current thread's scoped wrapped value (for global scope, returns the 'defaultValue').
 let context: Context = currentContext.get()
