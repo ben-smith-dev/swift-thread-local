@@ -25,7 +25,7 @@ Use `ThreadLocal` when the wrapped value can be read and overwritten arbitrarily
 ```swift
 import ThreadLocal
 
-nonisolated let currentCount = ThreadLocal<Int>(defaultValue: 0)
+nonisolated let currentCount = ThreadLocal(defaultValue: 0)
 
 // Get the current thread's wrapped value.
 let count: Int = currentCount.get()
@@ -41,7 +41,7 @@ Use `ScopedThreadLocal` when the wrapped value is temporarily scoped to synchron
 ```swift
 import ThreadLocal
 
-nonisolated let currentContext = ScopedThreadLocal<Context>(defaultValue: .default)
+nonisolated let currentContext = ScopedThreadLocal(defaultValue: Context())
 
 // Get the current thread's scoped wrapped value (for global scope, returns the 'defaultValue').
 let context: Context = currentContext.get()
