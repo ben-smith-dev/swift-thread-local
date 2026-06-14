@@ -9,6 +9,64 @@
   <p>A Swift package providing thread-local value wrappers.</p>
 </div>
 
+## Overview
+
+Thread-local value wrappers give threads their own independent instance of the wrapped value. Setting or mutating one thread's value has no effect on another thread's value.  
+
+The `defaultValue` (or `value` for `ReadonlyThreadLocal`) passed into the wrapper's initializer is evaluated lazily at most **once** per thread. This ensures each thread has its own distinct value.
+
+> [!IMPORTANT]
+> Thread-local wrappers **must** be `nonisolated` and declared as global constants or static properties to avoid memory leaks and unexpected behavior.
+
+### ThreadLocal
+
+Use `ThreadLocal` when the wrapped value can be read and overwritten arbitrarily, such as tracking a count.
+
+```swift
+import ThreadLocal
+
+nonisolated let currentCount = ThreadLocal<Int>(defaultValue: 0)
+
+// Get the current thread's wrapped value.
+let count: Int = currentCount.get()
+
+// Set the current thread's wrapped value.
+currentCount.set(currentCount + 1)
+```
+
+### ScopedThreadLocal
+
+Use `ScopedThreadLocal` when the wrapped value is temporarily scoped to synchronous operations, such as passing a context object down the call stack.
+
+```swift
+import ThreadLocal
+
+nonisolated let currentContext = ScopedThreadLocal<Context>(defaultValue: .default)
+
+// Get the current thread's scoped wrapped value (for global scope, returns the 'defaultValue').
+let context: Context = currentContext.get()
+
+// Set thread-local value for the duration of a synchronous operation (scope).
+currentContext.withValue(context.withName("John Doe")) {
+    // Calling 'currentContext.get()' will return the scoped value.  
+}
+
+// The thread-local value will be reverted back to 'context' automatically after the operation. 
+```
+
+### ReadonlyThreadLocal
+
+Use `ReadonlyThreadLocal` when the wrapped value does not need to be overwritten, such as a thread-local cache.
+
+```swift
+import ThreadLocal
+
+nonisolated let currentCache = ReadonlyThreadLocal(value: Cache())
+
+// Get the current thread's wrapped value.
+let cache: Cache = currentCache.get()
+```
+
 ## Installation
 
 ### Swift Package Manager (SPM)
