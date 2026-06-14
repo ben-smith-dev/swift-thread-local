@@ -18,7 +18,7 @@ The `defaultValue` (or `value` for `ReadonlyThreadLocal`) passed into the wrappe
 Thread-local wrapper method calls are restricted to synchronous contexts only. This ensures that no suspension points are hit, which may cause executer switches.
 
 > [!IMPORTANT]
-> Thread-local wrappers **must** be `nonisolated` and declared as global constants or static properties to avoid memory leaks and unexpected behavior.
+> Thread-local wrappers **must** be `nonisolated` and declared as global constants or static properties to avoid unexpected behavior and memory leaks.
 
 ### ThreadLocal
 
