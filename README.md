@@ -31,7 +31,7 @@ nonisolated let currentCount = ThreadLocal<Int>(defaultValue: 0)
 let count: Int = currentCount.get()
 
 // Set the current thread's wrapped value.
-currentCount.set(currentCount + 1)
+currentCount.set(count + 1)
 ```
 
 ### ScopedThreadLocal
