@@ -28,8 +28,8 @@ jobs:
           version: ${{ env.SWIFTLINT_VERSION }}
           args: --strict
 
-  build_test_macos:
-    name: Build and Test (macOS)
+  build_test_code_coverage_macos:
+    name: Build, Test, and Code Coverage (macOS)
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -41,10 +41,36 @@ jobs:
           swift-version: ${{ env.SWIFT_VERSION }}
 
       - name: Build
-        run: swift build --build-tests
+        run: swift build --build-tests --enable-code-coverage
 
-      - name: Test
-        run: swift test --skip-build
+      - name: Test with Coverage
+        run: swift test --skip-build --enable-code-coverage
+
+      - name: Locate Test Binary
+        run: |
+          BIN_PATH=$(swift build --show-bin-path)
+          XCTEST=$(find "$BIN_PATH" -name "*.xctest" -maxdepth 1 | head -1)
+          echo "PROFDATA=$BIN_PATH/codecov/default.profdata" >> $GITHUB_ENV
+          echo "TEST_BINARY=$XCTEST/Contents/MacOS/$(basename "$XCTEST" .xctest)" >> $GITHUB_ENV
+
+      - name: Generate Code Coverage Report
+        run: |
+          xcrun llvm-cov export \
+            -format=lcov \
+            -instr-profile "$PROFDATA" \
+            "$TEST_BINARY" \
+            -ignore-filename-regex='\.build|Tests' \
+            > coverage.lcov
+
+      - name: Validate CodeCov Configuration
+        if: hashFiles('.codecov.yml') != ''
+        run: curl -X POST --fail-with-body --data-binary @.codecov.yml https://codecov.io/validate
+
+      - name: Upload Code Coverage Report to CodeCov
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+        with:
+          files: coverage.lcov
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   build_test_linux:
     name: Build and Test (Linux)
