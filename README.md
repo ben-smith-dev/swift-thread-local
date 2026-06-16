@@ -78,7 +78,7 @@ Add the [swift-thread-local](https://github.com/ben-smith-dev/swift-thread-local
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/ben-smith-dev/swift-thread-local", from: "0.2.0"),
+    .package(url: "https://github.com/ben-smith-dev/swift-thread-local", from: "1.0.0"),
 ]
 ```
 
