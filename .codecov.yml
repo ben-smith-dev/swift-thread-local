@@ -1,0 +1,20 @@
+# CodeCov Configuration
+# https://docs.codecov.com/docs/codecovyml-reference
+
+coverage:
+  range: "80..90"
+  status:
+    project:
+      default:
+        informational: true
+    patch:
+      default:
+        informational: true
+
+github_checks:
+  annotations: false
+
+comment: false
+
+ignore:
+  - "Tests/**"
